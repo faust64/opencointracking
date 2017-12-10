@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const db = require('../lib/whateverql.js')();
+const currency = process.argv[2] || 'BTC';
+
+db.read(`SELECT * FROM currencies WHERE tag = '${currency}'`)
+    .then((coin) => {
+	    if (coin.length < 1) { throw new Error('coin not found'); }
+	    console.log(coin[0].id);
+	    process.exit(0);
+	})
+    .catch((e) => {
+	    console.error(e);
+	    process.exit(1);
+	})

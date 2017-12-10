@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+	<title>OpenCoinTracking</title>
+	<link rel='shortcut icon' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='16x16' href='/static/img/icon16.ico'/>
+	<link rel='icon' sizes='32x32' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='64x64' href='/static/img/icon64.ico'/>
+	<link rel='icon' type='image/png' sizes='196x196' href='/static/img/icon192.png'/>
+	<link rel='icon' type='image/png' sizes='160x160' href='/static/img/icon160.png'/>
+	<link rel='icon' type='image/png' sizes='96x96' href='/static/img/icon96.png'/>
+	<link rel='icon' type='image/png' sizes='64x64' href='/static/img/icon64.png'/>
+	<link rel='icon' type='image/png' sizes='32x32' href='/static/img/icon32.png'/>
+	<link rel='icon' type='image/png' sizes='16x16' href='/static/img/icon16.png'/>
+	<link rel='apple-touch-icon' href='/static/img/icon57.png'/>
+	<link rel='apple-touch-icon' sizes='114x114' href='/static/img/favicon114.png'/>
+	<link rel='apple-touch-icon' sizes='72x72' href='/static/img/favicon72.png'/>
+	<link rel='apple-touch-icon' sizes='144x144' href='/static/img/favicon144.png'/>
+	<link rel='apple-touch-icon' sizes='60x60' href='/static/img/favicon60.png'/>
+	<link rel='apple-touch-icon' sizes='120x120' href='/static/img/favicon120.png'/>
+	<link rel='apple-touch-icon' sizes='76x76' href='/static/img/favicon76.png'/>
+	<link rel='apple-touch-icon' sizes='152x152' href='/static/img/favicon152.png'/>
+	<link rel='apple-touch-icon' sizes='180x180' href='/static/img/favicon180.png'/>
+	<meta name='msapplication-TileColor' content='#FF0000'/>
+	<meta name='msapplication-TileImage' content='/static/img/icon144.png'/>
+	<meta name='msapplication-config' content='/static/browserconfig.xml'/>
+	<link href='/static/css/style.css' rel='stylesheet'/>
+	<script>
+	    function convert(what) {
+		var rate = {{ price }}, value = 0;
+		var srcform = document.getElementById('convertSrc');
+		var dstform = document.getElementById('convertDst');
+		if (what === 'src') { dstform.value = srcform.value * rate; }
+		else { srcform.value = dstform.value / rate; }              
+	    }
+	</script>
+    </head>
+    <body>
+	<div class='page'>
+	    <div class='wrapper'>
+		<div class='header'>
+		    <div class='logout'>
+			<a href='/dashboard'>{{ username }}</a> | <a href='/logout'>Logout</a>
+		    </div>
+		    <div class='left'>
+			<img class='logo' src='/static/img/logo.png' alt='heyheyhey'/>
+		    </div>
+		    <div class='main-nav'>
+			<ul>
+			    <div class='dropdown'><a href='/dashboard'><button class='dropbtn'>Dashboard</button></a></div>
+			    <div class='dropdown'><a href='/stats'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Reporting</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/stats'>Trade Statistics</a></li>
+					<li class='menu-item'><a class='navlink' href='/trades'>Trade List</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeprices'>Trade Prices</a></li>
+					<li class='menu-item'><a class='navlink' href='/currentbalance'>Current Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyday'>Daily Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyexchange'>Balance by Exchange</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebycurrency'>Balance by Currency</a></li>
+					<li class='menu-item'><a class='navlink' href='/fees'>Trading Fees</a></li>
+					<li class='menu-item'><a class='navlink' href='/doubleentry'>Double-Entry List</a></li>
+					<li class='menu-item'><a class='navlink' href='/summary'>Summary</a></li>
+					<li class='menu-item'><a class='navlink' href='/gains'>Realized &amp; Unrealized Gains</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeanalysis'>Trade Analysis</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown'><a href='/entercoins'><button class='dropbtn'>Enter Coins</button></a></div>
+			    <div class='dropdown'><a href='/cointrends'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Charts &amp; Trends</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/cointrends'>Coin Trends</a></li>
+					<li class='menu-item'><a class='navlink' href='/coincharts'>Coin Charts</a></li> 
+					<li class='menu-item'><a class='navlink' href='/calculator'>Coin Price Calculator</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown' style='float:right'><a href='/settings'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Account</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/settings'>Account Settings</a></li>
+					<li class='menu-item'><a class='navlink' href='/logout'>Logout</a></li>
+				    </div>
+				</ul>
+			    </div>
+			</ul>
+		    </div>
+		</div>
+		<div class='separator'>&nbsp;</div>
+		<div class='contentbox_title'>{{ pagetitle }}</div>
+		<div class='separator'>&nbsp;</div>
+	    </div>
+	    <div id='refresh'>
+		<div class='contentbox_table'>
+		    <div class='contentbox_cell'>
+			<table class='converter' cellspacing='0' width='25%' style='width: 25%; align: center;'>
+			    <tbody>
+				<tr>
+				    <td width='12' style='width: 12px;'>&nbsp;</td>
+				    <td class='converter-item'><span style='color: #999; font-size: 11px; text-align: left;'>Amount:</span></td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td class='converter-item'><input size='30' id='convertSrc' type='text' onChange='convert("src");' onKeyDown='convert("src");'/></td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td class='converter-item'><span style='color: #999; font-size: 11px; text-align: left;'>Currency:</span></td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td class='converter-item'>
+					<select id='pick-currency-convsrc' class='currencypicker' onChange='setDefaultCurrency("convsrc");'>
+{{#srccurrencies}}
+					    <option value='{{ id }}'{{ sfx }}>{{ tag }}</option>
+{{/srccurrencies}}
+					</select>
+				    </td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td class='converter-item'><span style='color: #999; font-size: 11px; text-align: left;'>Convert Into:</span></td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td class='converter-item'>
+					<select id='pick-currency-convdst' class='currencypicker' onChange='setDefaultCurrency("convdst");'>
+{{#dstcurrencies}}
+					    <option value='{{ id }}'{{ sfx }}>{{ tag }}</option>
+{{/dstcurrencies}}
+					</select>
+				    </td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td class='converter-item'><span style='color: #999; font-size: 11px; text-align: left;'>Valued:</span></td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td class='converter-item'><input size='30' id='convertDst' type='text' onChange='convert("dst");' onKeyDown='convert("dst");'/></td>
+				</tr>
+				<tr>
+				    <td>&nbsp;</td>
+				    <td>&nbsp;</td>
+				</tr>
+			    </tbody>
+			</table>
+		    </div>
+		</div>
+	    </div>
+	</div>
+	<div id='ct_reload'></div>
+	<div class='no_invert' style='width:100%; clear: both; background-color:#283f5e; margin-top: 60px;'>
+	    <div class='footer' style='background-color:#283f5e; color:#FFF; font-size:14px; line-height:20px; padding-bottom:20px;'>
+		<div class='s2' style='width:100%; background-color:#1f2735; color:#aab2bc; text-align:center; padding:12px 0;'>
+		    Sloppily reversed-engineered with <span style='color:#C30 !important;'>&#x2764;</span> in Paris &middot; Copyleft &copy; 2017-2018, OpenCoinTracking
+		</div>
+	    </div>
+	</div>
+    </body>
+</html>

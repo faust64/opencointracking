@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+	<title>OpenCoinTracking</title>
+	<link rel='shortcut icon' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='16x16' href='/static/img/icon16.ico'/>
+	<link rel='icon' sizes='32x32' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='64x64' href='/static/img/icon64.ico'/>
+	<link rel='icon' type='image/png' sizes='196x196' href='/static/img/icon192.png'/>
+	<link rel='icon' type='image/png' sizes='160x160' href='/static/img/icon160.png'/>
+	<link rel='icon' type='image/png' sizes='96x96' href='/static/img/icon96.png'/>
+	<link rel='icon' type='image/png' sizes='64x64' href='/static/img/icon64.png'/>
+	<link rel='icon' type='image/png' sizes='32x32' href='/static/img/icon32.png'/>
+	<link rel='icon' type='image/png' sizes='16x16' href='/static/img/icon16.png'/>
+	<link rel='apple-touch-icon' href='/static/img/icon57.png'/>
+	<link rel='apple-touch-icon' sizes='114x114' href='/static/img/favicon114.png'/>
+	<link rel='apple-touch-icon' sizes='72x72' href='/static/img/favicon72.png'/>
+	<link rel='apple-touch-icon' sizes='144x144' href='/static/img/favicon144.png'/>
+	<link rel='apple-touch-icon' sizes='60x60' href='/static/img/favicon60.png'/>
+	<link rel='apple-touch-icon' sizes='120x120' href='/static/img/favicon120.png'/>
+	<link rel='apple-touch-icon' sizes='76x76' href='/static/img/favicon76.png'/>
+	<link rel='apple-touch-icon' sizes='152x152' href='/static/img/favicon152.png'/>
+	<link rel='apple-touch-icon' sizes='180x180' href='/static/img/favicon180.png'/>
+	<meta name='msapplication-TileColor' content='#FF0000'/>
+	<meta name='msapplication-TileImage' content='/static/img/icon144.png'/>
+	<meta name='msapplication-config' content='/static/browserconfig.xml'/>
+	<link href='/static/css/style.css' rel='stylesheet'/>
+	<script type='text/javascript' src='/static/js/chart.js'></script>
+	<script type='text/javascript' src='/static/js/script.js'></script>
+    </head>
+    <body>
+	<div class='page'>
+	    <div class='wrapper'>
+		<div class='header'>
+		    <div class='logout'>
+			<a href='/dashboard'>{{ username }}</a> | <a href='/logout'>Logout</a>
+		    </div>
+		    <div class='left'>
+			<img class='logo' src='/static/img/logo.png' alt='heyheyhey'/>
+		    </div>
+		    <div class='main-nav'>
+			<ul>
+			    <div class='dropdown'><a href='/dashboard'><button class='dropbtn'>Dashboard</button></a></div>
+			    <div class='dropdown'><a href='/stats'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Reporting</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/stats'>Trade Statistics</a></li>
+					<li class='menu-item'><a class='navlink' href='/trades'>Trade List</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeprices'>Trade Prices</a></li>
+					<li class='menu-item'><a class='navlink' href='/currentbalance'>Current Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyday'>Daily Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyexchange'>Balance by Exchange</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebycurrency'>Balance by Currency</a></li>
+					<li class='menu-item'><a class='navlink' href='/fees'>Trading Fees</a></li>
+					<li class='menu-item'><a class='navlink' href='/doubleentry'>Double-Entry List</a></li>
+					<li class='menu-item'><a class='navlink' href='/summary'>Summary</a></li>
+					<li class='menu-item'><a class='navlink' href='/gains'>Realized &amp; Unrealized Gains</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeanalysis'>Trade Analysis</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown'><a href='/entercoins'><button class='dropbtn'>Enter Coins</button></a></div>
+			    <div class='dropdown'><a href='/cointrends'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Charts &amp; Trends</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/cointrends'>Coin Trends</a></li>
+					<li class='menu-item'><a class='navlink' href='/coincharts'>Coin Charts</a></li> 
+					<li class='menu-item'><a class='navlink' href='/calculator'>Coin Price Calculator</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown' style='float:right'><a href='/settings'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Account</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/settings'>Account Settings</a></li>
+					<li class='menu-item'><a class='navlink' href='/logout'>Logout</a></li>
+				    </div>
+				</ul>
+			    </div>
+			</ul>
+		    </div>
+		</div>
+		<div class='separator'>&nbsp;</div>
+		<div class='contentbox_title'>{{ pagetitle }}</div>
+		<div class='separator'>&nbsp;</div>
+	    </div>
+	    <div id='refresh'>
+		<div class='contentbox_table'>
+		    <div class='contentbox_cell'>
+			<div style='width: auto; float: left;'><h2 class='cell-title'>Total Value of All Currencies in {{ preferredCurrency }}</h2></div>
+			<div style='width: auto; float: right;'>
+			    <select id='pick-currency-mbc' class='currencypicker' onChange='setDefaultCurrency("mbc");'>
+{{#currencies}}
+				<option value='{{ id }}'{{ sfx }}>{{ tag }}</option>
+{{/currencies}}
+			    </select>
+			    <select id='pick-graphwatch-mbc' class='currencypicker' onChange='setDefaultWatch("mbc");'>
+{{#graphwatch}}
+				<option value='{{ value }}'{{ sfx }}>{{ label }}</option>
+{{/graphwatch}}
+			    </select>
+			</div>
+		    </div>
+		</div>
+{{#balances}}
+		<div class='contentbox_table'>
+		    <div class='contentbox_cell'>
+			<div style='width: auto; float: left;'><h2 class='cell-title'>{{ name }} ({{ tag }}) Balance by {{ hrtimeflt }}</h2></div>
+			<div style='display: inline-block; position: relative; height: 220px; width: 100%;'>
+			    <canvas class='canvas-graph' id='balance-{{ tag }}'></canvas><br/>
+			</div>
+			<div class='separator'>&nbsp;</div>
+			<div class='separator'>&nbsp;</div>
+			<div class='canvas'>
+			    <table class='dataTable' cellspacing='0' width='100%' style='width: 100%;'>
+				<thead>
+				    <tr>
+					<th class='title' width='50' style='width: 50px;'>{{ hrtimeflt }}</th>
+					<th class='title' width='40' style='width: 40px;'><span style='font-size: 10px;'>Purchases<br/>and Inputs</span></th>
+					<th class='title' width='40' style='width: 40px;'><span style='font-size: 10px;'>Sales<br/>and Outputs</span></th>
+					<th class='title' width='40' style='width: 40px;'><span style='font-size: 10px;'>Sum Tx</span></th>
+					<th class='title' width='68' style='width: 68px;'>Purchase and<br/>Input Amount</th>
+					<th class='title' width='68' style='width: 68px;'>Sales and<br/>Output Amount</th>
+					<th class='title' width='68' style='width: 68px;'>Purchase and<br/>Input Value</th>
+					<th class='title' width='68' style='width: 68px;'>Sales and<br/>Output Value</th>
+					<th class='title' width='68' style='width: 68px;'>Difference</th>
+					<th class='title' width='68' style='width: 68px;'>Trade Volume</th>
+				    </tr>
+				</thead>
+				<tbody>
+{{#groupped}}
+				    <tr class='{{ oddeven }}'>
+					<td class='list {{ oddeven }}date'>{{ hrat }}</td>
+					<td class='list'>{{ rx }}</td>
+					<td class='list'>{{ tx }}</td>
+					<td class='list'>{{ sumtx }}</td>
+					<td class='list'>{{ hrbought }} {{ tag }}</td>
+					<td class='list'>{{ hrsold }} {{ tag }}</td>
+					<td class='list'>{{ hrboughtcust }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ hrboughtbtc }} BTC</span></td>
+					<td class='list'>{{ hrsoldcust }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ hrsoldbtc }} BTC</span></td>
+					<td class='list'>{{ hrdiff }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ hrdiffbtc }} BTC</span></td>
+					<td class='list'>{{ hrvolume }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ hrvolumebtc }} BTC</span></td>
+				    </tr>
+{{/groupped}}
+				</tbody>
+				<tfoot>
+				    <tr class='balances-footer'>
+					<td class='list'><div style='margin-left: 12px; font-weight: bold; text-align: left;'>Total:</div></td>
+					<td class='list'>{{ rxtot }}</td>
+					<td class='list'>{{ txtot }}</td>
+					<td class='list'>{{ totot }}</td>
+					<td class='list'>{{ pamount }} {{ tag }}</td>
+					<td class='list'>{{ samount }} {{ tag }}</td>
+					<td class='list'>{{ pvalue }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ pvaluebtc }} BTC</span></td>
+					<td class='list'>{{ svalue }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ svaluebtc }} BTC</span></td>
+					<td class='list'>{{ difftot }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ difftotbtc }} BTC</span></td>
+					<td class='list'>{{ voltot }} {{ preferredCurrency }}<br/><span style='font-size: 11px; color: #ccc;'>{{ voltotbtc }} BTC</span></td>
+				    </tr>
+				</tfoot>
+			    </table>
+			    <div class='separator'>&nbsp;</div>
+			</div>
+		    </div>
+		</div>
+		<script type='text/javascript'>
+		    var ctxb{{ tag }} = document.getElementById('balance-{{ tag }}').getContext('2d');
+		    var b{{ tag }}chart = new Chart(ctxb{{ tag }}, {
+			    type: 'bar',
+			    data: {
+				    labels: [
+{{#groupped}}
+					    {{ at }},
+{{/groupped}}
+					    {{ fixednextdate }}
+					],
+					
+				    datasets: [
+					{
+					    label: 'Purchases in {{ preferredCurrency }}',
+					    data: [
+{{#groupped}}
+						    {{ boughtcust }},
+{{/groupped}}
+						    42
+						],
+					    backgroundColor: 'rgba(0, 0, 255, 0.3)',
+					    borderColor: 'rgba(0, 0, 255, 1)',
+					    borderWidth: 1
+					},
+					{
+					    label: 'Sales in {{ preferredCurrency }}',
+					    data: [
+{{#groupped}}
+						    {{ soldcust }},
+{{/groupped}}
+						    42
+						],
+					    backgroundColor: 'rgba(255, 0, 0, 0.3)',
+					    borderColor: 'rgba(255, 0, 0, 1)',
+					    borderWidth: 1
+					}
+				    ]
+				},
+			    options: {
+				    maintainAspectRatio: false,
+				    responsive: true,
+				    scales: {
+					    xAxes: [{
+						    type: 'time',
+						    display: true
+						}]
+					}
+				}
+			});
+		</script>
+{{/balances}}
+	    </div>
+	</div>
+	<div style='width:100%; clear: both; background-color:#283f5e; margin-top: 60px;'>
+	    <div class='footer' style='background-color:#283f5e; color:#FFF; font-size:14px; line-height:20px; padding-top:20px;'>
+		<div style='width:100%; background-color:#1f2735; color:#aab2bc; text-align:center; padding:12px 0;'>
+		    Sloppily reversed-engineered with <span style='color:#C30 !important;'>&#x2764;</span> in Paris &middot; Copyleft &copy; 2017-2018, OpenCoinTracking
+		</div>
+	    </div>
+	</div>
+    </body>
+</html>

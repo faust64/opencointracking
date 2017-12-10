@@ -1,0 +1,573 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+	<title>OpenCoinTracking</title>
+	<link rel='shortcut icon' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='16x16' href='/static/img/icon16.ico'/>
+	<link rel='icon' sizes='32x32' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='64x64' href='/static/img/icon64.ico'/>
+	<link rel='icon' type='image/png' sizes='196x196' href='/static/img/icon192.png'/>
+	<link rel='icon' type='image/png' sizes='160x160' href='/static/img/icon160.png'/>
+	<link rel='icon' type='image/png' sizes='96x96' href='/static/img/icon96.png'/>
+	<link rel='icon' type='image/png' sizes='64x64' href='/static/img/icon64.png'/>
+	<link rel='icon' type='image/png' sizes='32x32' href='/static/img/icon32.png'/>
+	<link rel='icon' type='image/png' sizes='16x16' href='/static/img/icon16.png'/>
+	<link rel='apple-touch-icon' href='/static/img/icon57.png'/>
+	<link rel='apple-touch-icon' sizes='114x114' href='/static/img/favicon114.png'/>
+	<link rel='apple-touch-icon' sizes='72x72' href='/static/img/favicon72.png'/>
+	<link rel='apple-touch-icon' sizes='144x144' href='/static/img/favicon144.png'/>
+	<link rel='apple-touch-icon' sizes='60x60' href='/static/img/favicon60.png'/>
+	<link rel='apple-touch-icon' sizes='120x120' href='/static/img/favicon120.png'/>
+	<link rel='apple-touch-icon' sizes='76x76' href='/static/img/favicon76.png'/>
+	<link rel='apple-touch-icon' sizes='152x152' href='/static/img/favicon152.png'/>
+	<link rel='apple-touch-icon' sizes='180x180' href='/static/img/favicon180.png'/>
+	<meta name='msapplication-TileColor' content='#FF0000'/>
+	<meta name='msapplication-TileImage' content='/static/img/icon144.png'/>
+	<meta name='msapplication-config' content='/static/browserconfig.xml'/>
+	<link href='/static/css/style.css' rel='stylesheet'/>
+	<script src='/static/js/script.js'></script>
+    </head>
+    <body onload='load();'>
+	<div id='datepicker' class='datepicker'>
+	    <a id='closeoverlay' onClick='hideDatePicker();' href='#'>&nbsp;</a>
+	    <div class='datepicker datepicker-header'>
+		<div class='datepicker-select'>
+		    <select id='pick-month' class='datepicker-month' onChange='renderCalendar()';>
+{{#monthpicker}}
+			<option value='{{ value }}'{{ sfx }}>{{ name }}</option>
+{{/monthpicker}}
+		    </select>
+		    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		    <select id='pick-year' class='datepicker-year' onChange='renderCalendar()';>
+{{#yearpicker}}
+			<option value='{{ value }}'{{ sfx }}>{{ value }}</option>
+{{/yearpicker}}
+		    </select>
+		</div>
+	    </div>
+	    <input type='hidden' id='pick-day'/>
+	    <table class='datepicker-calendar'>
+		<thead>
+		    <tr>
+			<th scope='col' class='ui-datepicker-week-end'><span title='Sunday'>Su</span></th>
+			<th scope='col'><span title='Monday'>Mo</span></th>
+			<th scope='col'><span title='Tuesday'>Tu</span></th>
+			<th scope='col'><span title='Wednesday'>We</span></th>
+			<th scope='col'><span title='Thursday'>Th</span></th>
+			<th scope='col'><span title='Friday'>Fr</span></th>
+			<th scope='col' class='ui-datepicker-week-end'><span title='Saturday'>Sa</span></th>
+		    </tr>
+		</thead>
+		<tbody id='datepicker-calendar'>
+		    <tr>
+		    </tr>
+		</tbody>
+	    </table>
+	    <div class='datepicker'>
+		<table class='timepicker'>
+		    <tbody>
+			<tr>
+			    <td class='timepicker-label'>Time</td>
+			    <td class='timepicker-value' id='timepicker-value'>0:00:00</td>
+			</tr>
+			<tr>
+			    <td class='timepicker-label'>Hour</td>
+			    <td><div class='slider' id='slider-hour'><span class='slider-handle' id='slider-handle-hour'></span></div></td>
+			</tr>
+			<tr>
+			    <td class='timepicker-label'>Minute</td>
+			    <td><div class='slider' id='slider-min'><span class='slider-handle' id='slider-handle-min'></span></div></td>
+			</tr>
+			<tr>
+			    <td class='timepicker-label'>Second</td>
+			    <td><div class='slider' id='slider-sec'><span class='slider-handle' id='slider-handle-sec'></span></div></td>
+			</tr>
+		    </tbody>
+		</table>
+		<script type='text/javascript'>
+		    var hiddenDay = document.getElementById('pick-day');
+		    var selMonth = document.getElementById('pick-month');
+		    var selYear = document.getElementById('pick-year');
+		    var childHour = document.getElementById('slider-handle-hour');
+		    var childMin = document.getElementById('slider-handle-min');
+		    var childSec = document.getElementById('slider-handle-sec');
+		    var parentHour = document.getElementById('slider-hour');
+		    var parentMin = document.getElementById('slider-min');
+		    var parentSec = document.getElementById('slider-sec');
+		    parentHour.addEventListener('click', function(event) {
+			    var parentCoordinates = getOffset(parentHour);
+			    var parentLeft = parentCoordinates.left;
+			    var parentRight = parentLeft + (parentHour.clientWidth || parentHour.width);
+			    var mouseX = event.clientX || event.pageX;
+			    if (mouseX < parentLeft) { mouseX = parentLeft; }
+			    else if (mouseX > parentRight) { mouseX = parentRight; }
+			    var ratio = (mouseX - parentLeft) * 100 / (parentRight - parentLeft)
+			    var resHour = Math.round(23 * ratio / 100);
+			    updateDatePicker(resHour);
+			    childHour.style.left = ratio.toString()+'%';
+			});
+		    parentMin.addEventListener('click', function(event) {
+			    var parentCoordinates = getOffset(parentMin);
+			    var parentLeft = parentCoordinates.left;
+			    var parentRight = parentLeft + (parentMin.clientWidth || parentMin.width);
+			    var mouseX = event.clientX || event.pageX;
+			    if (mouseX < parentLeft) { mouseX = parentLeft; }
+			    else if (mouseX > parentRight) { mouseX = parentRight; }
+			    var ratio = (mouseX - parentLeft) * 100 / (parentRight - parentLeft)
+			    var resMin = Math.round(59 * ratio / 100);
+			    updateDatePicker(undefined, resMin, undefined);
+			    childMin.style.left = ratio.toString()+'%';
+			});
+		    parentSec.addEventListener('click', function(event) {
+			    var parentCoordinates = getOffset(parentSec);
+			    var parentLeft = parentCoordinates.left;
+			    var parentRight = parentLeft + (parentSec.clientWidth || parentSec.width);
+			    var mouseX = event.clientX || event.pageX;
+			    if (mouseX < parentLeft) { mouseX = parentLeft; }
+			    else if (mouseX > parentRight) { mouseX = parentRight; }
+			    var ratio = (mouseX - parentLeft) * 100 / (parentRight - parentLeft)
+			    var resSec = Math.round(59 * ratio / 100);
+			    updateDatePicker(undefined, undefined, resSec);
+			    childSec.style.left = ratio.toString()+'%';
+			});
+		    function setDay(day) {
+			hiddenDay.value = day;
+			renderCalendar();
+		    }
+		    function renderCalendar() {
+			var calendar = document.getElementById('datepicker-calendar');
+			var month = selMonth.selectedIndex + 1;
+			var output = '<tr>', idx;
+			var picked = hiddenDay.value;
+			var year = selYear[selYear.selectedIndex].value;
+			var ndays = getDaysInMonth(month, year);
+			var sindex = getFirstWeekdayMonth(month, year);
+			for (idx = 0; idx < sindex; idx++) {
+			    output += "<td class='datepicker-notaday'>&nbsp;</td>";
+			}
+			for (var day = 1; day <= ndays; day++) {
+			    if (((idx + day) % 7) === 0) { output += '</tr><tr>'; }
+			    else {
+				var type = 'weekday', onclick = " onClick='setDay(" + day + ");'";
+				if (picked === day.toString() || picked === day) { type = 'daypicked'; onclick = ''; }
+				else if (((idx + day) % 7) === 0 || ((idx + day + 1) % 7) === 0) { type = 'weekend'; }
+				output += "<td class='datepicker-" + type + "'><a class='pickdate' href='#'" + onclick + '>' + day + '</a></td>';
+			    }
+			    if (day === ndays) {
+				for (; (idx + day) % 7 !== 0; day++) {
+				    output += "<td class='datepicker-notaday'>&nbsp;</td>";
+				}
+				output += '</tr>';
+			    }
+			}
+			calendar.innerHTML = output;
+		    }
+		    function setNow() {
+			var thedate = new Date();
+			selMonth[thedate.getMonth()].selected = true;
+			for (i = 0; i < selYear.length; i++) {
+			    if (selYear[i].value === thedate.getFullYear().toString()) {
+				selYear[i].selected = true;
+			    }
+			}
+			hiddenDay.value = thedate.getDate();
+			renderCalendar();
+			updateDatePicker(thedate.getHours(), thedate.getMinutes(), thedate.getSeconds());
+			childHour.style.left = Math.round(thedate.getHours() * 100 / 24) + '%';
+			childMin.style.left = Math.round(thedate.getMinutes() * 100 / 60) + '%';
+			childSec.style.left = Math.round(thedate.getSeconds() * 100 / 60) + '%';
+		    }
+		    function confirmPickedDate() {
+			var currentDate = document.getElementById('timepicker-value').innerHTML.split(':');
+			var tradetime = document.getElementById('tradetime');
+			tradetime.value = new Date(selYear[selYear.selectedIndex].value, selMonth.selectedIndex + 1, hiddenDay.value, currentDate[0], currentDate[1], currentDate[2]);
+			hideDatePicker();
+		    }
+		    setNow();
+		</script>
+	    </div>
+	    <div>
+		<button type='button' class='dt-button' onClick='setNow();'>Now</button>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<button type='button' class='dt-button' onClick='confirmPickedDate();'>Done</button>
+	    </div>
+	</div>
+	<div id='overlay' ondrop='drop(event);' ondragover='allowDrop(event);'>
+	    <div id='droppable' class='nestedoverlay' draggable='true' ondragstart='drag(event);'>
+		<a id='closeoverlay' onclick='hideForm();' href='#'></a>
+		<div class='formheader'>Add a new transaction</div>
+		<div class='formbody'>
+		    <fieldset class='tradeitem trade-type'>
+			<legend class='tradeitemlegend'>Type and Date</legend>
+			<div class='formfield'>
+			    <label class='formlabel'>Transaction Type:</label>
+			    <div class='formfieldinput'>
+				<select id='tradetype' onChange='updateForm();'>
+				    <option value='0'>Trade (Exchange)</option>
+				    <option value='1'>[In] General Deposit (Transfer)</option>
+				    <option value='3'>[In] Income</option>
+				    <option value='4'>[In] Mining</option>
+				    <option value='5'>[In] Gift / Tip</option>
+				    <option value='2'>[Out] General Withdrawal (Transfer)</option>
+				    <option value='6'>[Out] Spend</option>
+				    <option value='7'>[Out] Donation (Registered Charity)</option>
+				    <option value='8'>[Out] Gift</option>
+				    <option value='9'>[Out] Stolen / Hacked / Fraud</option>
+				    <option value='10'>[Out] Lost</option>
+				    <option value='11'>Transfer</option>
+				</select>
+			    </div>
+			</div>
+			<div class='formfield'>
+			    <label class='formlabel'>Transaction Date:</label>
+			    <div class='formfieldinput'>
+				<input id='tradetime' onClick='showDatePicker();' type='text' size='42' value=''/>
+				<a href='#' onClick='showDatePicker();'><img class='ui-datepicker-trigger' src='/static/img/calender.gif' alt='Select a date'/></a>
+			    </div>
+			</div>
+		    </fieldset>
+		    <table class='tradearraycontainer' id='trade-stolen'>
+			<tbody>
+			    <tr>
+				<td class='tradearraycontainer'>
+				    <fieldset class='tradeitem trade-byt'>
+					<legend class='tradeitemlegend' id='single-legend'>Loss</legend>
+					<table class='tradearraycontainer'>
+					    <tbody>
+						<tr>
+						    <td>
+							<label class='formlabel'>Amount:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='loss-volume' value='0'/>
+						    </td>
+						</tr>
+						    <td>
+							<label class='formlabel'>Currency:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='loss-currency' value=''/><br/>
+							<span class='tradecomment'>Example: <em>BTC</em></span>
+						    </td>
+						</tr>
+					    </tbody>
+					</table>
+				    </fieldset>
+				</td>
+			    </tr>
+			</tbody>
+		    </table>
+		    <table class='tradearraycontainer' id='trade-movement'>
+			<tbody>
+			    <tr>
+				<td class='tradearray2'>
+				    <fieldset class='tradeitem trade-buy'>
+					<legend class='tradeitemlegend' id='trade-principal-legend'>Deposit</legend>
+					<table class='tradearraycontainer'>
+					    <tbody>
+						<tr>
+						    <td>
+							<label class='formlabel'>Amount:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='exchange-buy-volume' value='0'/>
+						    </td>
+						</tr>
+						    <td>
+							<label class='formlabel'>Currency:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='exchange-buy-currency' value=''/><br/>
+							<span class='tradecomment'>Example: <em>BTC</em></span>
+						    </td>
+						</tr>
+					    </tbody>
+					</table>
+				    </fieldset>
+				</td>
+				<td class='tradearray2'>
+				    <fieldset class='tradeitem trade-sell' id='trade-sell'>
+					<legend class='tradeitemlegend' id='trade-fee-legend'>Transaction Fee</legend>
+					<table class='tradearraycontainer'>
+					    <tbody>
+						<tr>
+						    <td>
+							<label class='formlabel'>Amount:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='exchange-fee-volume' value='0'/>
+						    </td>
+						</tr>
+						    <td>
+							<label class='formlabel'>Currency:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='exchange-fee-currency' value=''/><br/>
+							<span class='tradecomment'>Example: <em>BTC</em></span>
+						    </td>
+						</tr>
+					    </tbody>
+					</table>
+				    </fieldset>
+				</td>
+			    </tr>
+			</tbody>
+		    </table>
+		    <table class='tradearraycontainer' id='trade-exchange'>
+			<tbody>
+			    <tr>
+				<td class='tradearray3'>
+				    <fieldset class='tradeitem trade-buy' id='trade-buy'>
+					<legend class='tradeitemlegend' id='buy-legend'>Buy</legend>
+					<table class='tradearraycontainer'>
+					    <tbody>
+						<tr>
+						    <td>
+							<label class='formlabel'>Amount:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='trade-buy-volume' value='0'/>
+						    </td>
+						</tr>
+						    <td>
+							<label class='formlabel'>Currency:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='trade-buy-currency' value=''/><br/>
+							<span class='tradecomment'>Example: <em>BTC</em></span>
+						    </td>
+						</tr>
+					    </tbody>
+					</table>
+				    </fieldset>
+				</td>
+				<td class='tradearray3'>
+				    <fieldset class='tradeitem trade-sell' id='trade-sell'>
+					<legend class='tradeitemlegend' id='sold-legend'>Sell</legend>
+					<table class='tradearraycontainer'>
+					    <tbody>
+						<tr>
+						    <td>
+							<label class='formlabel'>Amount:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='trade-sell-volume' value='0'/>
+						    </td>
+						</tr>
+						<tr>
+						    <td>
+							<label class='formlabel'>Currency:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='trade-sell-currency' value=''/><br/>
+							<span class='tradecomment'>Example: <em>EUR</em></span>
+						    </td>
+						</tr>
+					    </tbody>
+					</table>
+				    </fieldset>
+				</td>
+				<td class='tradearray3'>
+				    <fieldset class='tradeitem trade-fee' id='trade-fee'>
+					<legend class='tradeitemlegend' id='feed-legend'>Trading Fee</legend>
+					<table class='tradearraycontainer'>
+					    <tbody>
+						<tr>
+						    <td>
+							<label class='formlabel'>Amount:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='trade-fee-volume' value='0'/>
+						    </td>
+						</tr>
+						<tr>
+						    <td>
+							<label class='formlabel'>Currency:</label>
+						    </td>
+						    <td>
+							<input class='tradevalue' id='trade-fee-currency' value=''/><br/>
+							<span class='tradecomment'>Example: <em>EUR</em></span>
+						    </td>
+						</tr>
+					    </tbody>
+					</table>
+				    </fieldset>
+				</td>
+			    </tr>
+			</tbody>
+		    </table>
+		    <fieldset class='tradeitem'>
+			<legend class='tradeitemlegend'>Optional Details</legend>
+			<table class='tradearraycontainer'>
+			    <tbody>
+				<tr>
+				    <td>
+					<label id='trade-opt-label1' class='formlabel'>Exchange:</label><br/>
+					<span class='tradecomment'>Example: <em>Kraken</em></span>
+				    </td>
+				    <td>
+					<input class='tradevalue' id='trade-opt1'/>
+				    </td>
+				</tr>
+				<tr>
+				    <td>
+					<label id='trade-opt-label2' class='formlabel'>Trade Group:</label><br/>
+					<span class='tradecomment'>Example: <em>CEX</em></span>
+				    </td>
+				    <td>
+					<input class='tradevalue' id='trade-opt2'/>
+				    </td>
+				</tr>
+				<tr>
+				    <td>
+					<label class='formlabel'>Comment:</label><br/>
+					<span class='tradecomment'>Example: <em>1 BTC from Wallet</em></span>
+				    </td>
+				    <td>
+					<input class='tradevalue' id='trade-comment'/>
+				    </td>
+				</tr>
+			    </tbody>
+			</table>
+		    </fieldset>
+		</div>
+		<div class='formfooter'><div class='formfooterbtn'><input class='dropbtn' onClick='submitTrade();' type='button' value='Add Record'/></div></div>
+	    </div>
+	</div>
+	<div class='page'>
+	    <div class='wrapper'>
+		<div class='header'>
+		    <div class='logout'>
+			<a href='/dashboard'>{{ username }}</a> | <a href='/logout'>Logout</a>
+		    </div>
+		    <div class='left'>
+			<img class='logo' src='/static/img/logo.png' alt='heyheyhey'/>
+		    </div>
+		    <div class='main-nav'>
+			<ul>
+			    <div class='dropdown'><a href='/dashboard'><button class='dropbtn'>Dashboard</button></a></div>
+			    <div class='dropdown'><a href='/stats'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Reporting</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/stats'>Trade Statistics</a></li>
+					<li class='menu-item'><a class='navlink' href='/trades'>Trade List</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeprices'>Trade Prices</a></li>
+					<li class='menu-item'><a class='navlink' href='/currentbalance'>Current Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyday'>Daily Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyexchange'>Balance by Exchange</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebycurrency'>Balance by Currency</a></li>
+					<li class='menu-item'><a class='navlink' href='/fees'>Trading Fees</a></li>
+					<li class='menu-item'><a class='navlink' href='/doubleentry'>Double-Entry List</a></li>
+					<li class='menu-item'><a class='navlink' href='/summary'>Summary</a></li>
+					<li class='menu-item'><a class='navlink' href='/gains'>Realized &amp; Unrealized Gains</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeanalysis'>Trade Analysis</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown'><a href='/entercoins'><button class='dropbtn'>Enter Coins</button></a></div>
+			    <div class='dropdown'><a href='/cointrends'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Charts &amp; Trends</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/cointrends'>Coin Trends</a></li>
+					<li class='menu-item'><a class='navlink' href='/coincharts'>Coin Charts</a></li> 
+					<li class='menu-item'><a class='navlink' href='/calculator'>Coin Price Calculator</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown' style='float:right'><a href='/settings'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Account</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/settings'>Account Settings</a></li>
+					<li class='menu-item'><a class='navlink' href='/logout'>Logout</a></li>
+				    </div>
+				</ul>
+			    </div>
+			</ul>
+		    </div>
+		</div>
+		<div class='separator'>&nbsp;</div>
+		<div class='contentbox_title'>{{ pagetitle }}</div>
+		<div class='separator'>&nbsp;</div>
+	    </div>
+	    <div id='refresh'>
+		<div class='contentbox_table'>
+		    <div class='contentbox_cell'>
+			<div class='dt-buttons'>
+			    <a class='dt-button buttons-create' href='#' onClick='showForm();'><span>New</span></a>
+			    <a class='dt-button buttons-create' href='#' onClick='exportAs("/entercoins", "csv");'><span>Export as CSV</span></a>
+			    <a class='dt-button buttons-create' href='#' onClick='exportAs("/entercoins", "pdf");'><span>Export as PDF</span></a>
+			</div>
+			<div class='limit'>
+			    <span class='limitlabel'>Entries per Page:</span>
+			    <select class='limitselect' id='pick-pagelimit' onClick='setDefaultPageLimit();'>
+{{#limitpicker}}
+				<option value='{{ value }}'{{ sfx }}>{{ label }}</option>
+{{/limitpicker}}
+			    </select>
+			</div>
+			<table class='dataTable' cellspacing='0' width='100%' style='width: 100%;'>
+			    <thead>
+				<tr role='row'>
+				    <th class='title' width='5' style='width: 5px;'></th>
+				    <th class='title' width='52' style='width: 52px;'>Type</th>
+				    <th class='title' width='60' style='width: 60px;'>Buy</th>
+				    <th class='title' width='30' style='font-size: 11px; width: 30px;'>Cur.</th>
+				    <th class='title' width='60' style='width: 60px;'>Sell</th>
+				    <th class='title' width='30' style='font-size: 11px; width: 30px;'>Cur.</th>
+				    <th class='title' width='60' style='width: 60px;'>Fee</th>
+				    <th class='title' width='30' style='font-size: 11px; width: 30px;'>Cur.</th>
+				    <th class='title' width='80' style='width: 80px;'>Exchange</th>
+				    <th class='title' width='70' style='width: 70px;'>Group</tha>
+				    <th class='title' width='142' style='width: 142px;'>Comment</th>
+				    <th class='title' width='106' style='width: 106px;'>Date</th>
+				</tr>
+			    </thead>
+			    <tbody>
+{{#trades}}
+				<tr class='{{ oddeven }}'>
+				    <td class='list'><a onClick='dropTrade("{{ id }}");' href='#'><img src='/static/img/trash.png' onClick='dropTrade("{{ id }}");' class='drop-trade'/></a></td>
+				    <td class='list'><span class='{{ typeclass }}'>{{ type }}</span></td>
+				    <td class='list'>{{ bought }}</td>
+				    <td class='list'>{{ boughtcurrency }}</td>
+				    <td class='list'>{{ amount }}</td>
+				    <td class='list'>{{ currency }}</td>
+				    <td class='list'>{{ txfee }}</td>
+				    <td class='list'>{{ feecurrency }}</td>
+				    <td class='list'>{{{ exchange }}}</td>
+				    <td class='list'>{{{ group }}}</td>
+				    <td class='list'>{{{ comment }}}</td>
+				    <td class='list {{ oddeven }}date'>{{{ timestring }}}</td>
+				</tr>
+{{/trades}}
+				<tr class='{{ pageclass }}'>
+				    <td colspan='12'>
+					<span class='totalcount'>Showing {{ startidx }} to {{ stopidx }} of {{ maxidx }} entries</span>
+					<div class='pagesel'>
+					    <span class='pagelink'><a href='/entercoins?offset={{ prevoffset }}'>Previous</a>&nbsp;&nbsp;</span>
+					    <span class='pagepick'>
+						<select id='pageselect' onClick='setPage("/entercoins");'>
+{{#haspages}}
+						    <option value='{{ value }}'{{ sfx }}>{{ value }}</option>
+{{/haspages}}
+						</select>
+					    </span>
+					    <span class='pagelink'>&nbsp;&nbsp;<a href='/entercoins?offset={{ nextoffset }}'>Next</a></span>
+					</div>
+				    </td>
+				</tr>
+			    </tbody>
+			</table>
+		    </div>
+		</div>
+	    </div>
+	</div>
+	<div id='ct_reload'></div>
+	<div class='no_invert' style='width:100%; clear: both; background-color:#283f5e; margin-top: 60px;'>
+	    <div class='footer' style='background-color:#283f5e; color:#FFF; font-size:14px; line-height:20px; padding-bottom:20px;'>
+		<div class='s2' style='width:100%; background-color:#1f2735; color:#aab2bc; text-align:center; padding:12px 0;'>
+		    Sloppily reversed-engineered with <span style='color:#C30 !important;'>&#x2764;</span> in Paris &middot; Copyleft &copy; 2017-2018, OpenCoinTracking
+		</div>
+	    </div>
+	</div>
+    </body>
+</html>

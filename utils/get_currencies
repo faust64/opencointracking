@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+const db = require('../lib/whateverql.js')();
+const arg = process.argv[2] || false;
+let filter = '';
+
+if (arg === 'crypto') {
+    filter = ' WHERE isfiat = 0';
+} else if (arg === 'fiat') {
+    filter = ' WHERE isfiat = 1';
+}
+
+db.read(`SELECT * FROM currencies${filter} ORDER BY id ASC`)
+    .then((coins) => {
+	    if (coins.length < 1) { throw new Error('coins not found'); }
+	    for (let i = 0; i < coins.length; i++) { console.log(coins[i].tag); }
+	    process.exit(0);
+	})
+    .catch((e) => {
+	    console.error(e);
+	    process.exit(1);
+	})

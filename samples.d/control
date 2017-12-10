@@ -1,0 +1,157 @@
+#!/bin/sh
+
+if test `id -u` -eq 0; then
+    sudo -u hwth $0 $@
+    exit $?
+fi
+export HOME=/var/lib/occ
+if ! test -f $HOME/.profile; then
+    echo missing configuration >&2
+    exit 1
+fi
+. $HOME/.profile
+if test -f $HOME/.bash_profile; then
+    . $HOME/.bash_profile
+fi
+if test -d /usr/local/nodejs/bin; then
+    export PATH=/usr/local/nodejs/bin:$PATH
+fi
+
+if test -z "$FORKS"; then
+    NCORES=`awk 'BEG{c=0}/^core id/{c=c+1}END{print c}' /proc/cpuinfo`
+    if test "$NCORES" -ge 2; then
+	FORKS=$NCORES
+    else
+	FORKS=2
+    fi
+fi
+ACTION=$1
+shift
+if test "$1"; then
+    DO_WORKERS="$@"
+fi
+if test -z "$RUN_WORKERS"; then
+    RUN_WORKERS="front background"
+fi
+if test "$DO_WORKERS"; then
+    for worker in $DO_WORKERS
+    do
+	if echo $RUN_WORKERS | grep $worker >/dev/null; then
+	    DO="$DO $worker"
+	fi
+    done
+    if test "$RUN_WORKERS"; then
+	RUN_WORKERS="$DO"
+    fi
+fi
+
+case "$ACTION" in
+    start)
+	ret=0
+	if ! test -d /var/lib/cointracking/node_modules -a -s /var/lib/cointracking/api/router.js; then
+	    for d in api lib workers templates node_modules package.json
+	    do
+		if ! rsync -avWxq --delete /usr/share/cointracking/$d /var/lib/cointracking/; then
+		    echo "[err] can't init working copy" >&2
+		    exit 1
+		fi
+	    done
+	fi
+	for worker in $RUN_WORKERS
+	do
+	    test -s /usr/share/cointracking/workers/$worker.js || continue
+	    if pm2 show $worker 2>/dev/null | grep online >/dev/null; then
+		echo "[info] $worker already running" >&2
+	    elif test -s /var/lib/cointracking/workers/$worker.js; then
+		(
+		    cd /var/lib/cointracking
+		    pm2 start ./workers/$worker.js			\
+			--name $worker -i $FORKS --update-env		\
+			--output /var/log/cointracking/$worker.log	\
+			--error /var/log/cointracking/$worker.err	\
+			--kill-timeout 5000
+		) || ret=`expr $ret + 1`
+	    else
+		echo "[err] unknown worker $worker" >&2
+	    fi
+	done
+	if test "$ret" -eq 0; then
+	    pm2 save
+	fi
+	;;
+    refresh|refresh-save)
+	if test -s /usr/share/cointracking/workers/front.js -a -d /usr/share/cointracking/node_modules; then
+	    for d in api lib workers templates node_modules package.json
+	    do
+		if ! rsync -avWxq --delete /usr/share/cointracking/$d /var/lib/cointracking/; then
+		    echo "[err] can't init working copy" >&2
+		    exit 1
+		fi
+	    done
+	    $0 reload
+	else
+	    echo "[err] missing source" >&2
+	    exit 1
+	fi
+	;;
+    status)
+	ret=0
+	for worker in $RUN_WORKERS
+	do
+	    test -s /usr/share/cointracking/workers/$worker.js || continue
+	    if ! pm2 show $worker 2>/dev/null | grep online >/dev/null; then
+		ret=`expr $ret + 1`
+		echo "[info] no $worker running" >&2
+	    else
+		echo "[info] $worker is running"
+	    fi
+	done
+	exit $ret
+	;;
+    stop)
+	for worker in $RUN_WORKERS
+	do
+	    test -s /usr/share/cointracking/workers/$worker.js || continue
+	    if ! pm2 show $worker 2>/dev/null | grep uptime >/dev/null; then
+		echo "[info] no $worker running" >&2
+	    else
+	        pm2 delete $worker
+	    fi
+	done
+	;;
+    restart)
+	$0 stop
+	$0 start
+	;;
+    reload)
+	ret=0
+	for worker in $RUN_WORKERS
+	do
+	    test -s /usr/share/cointracking/workers/$worker.js || continue
+	    if ! pm2 show $worker >/dev/null 2>&1; then
+		(
+		    cd /var/lib/cointracking
+		    pm2 start ./workers/$worker.js			\
+			--name $worker -i $FORKS --update-env		\
+			--output /var/log/cointracking/$worker.log	\
+			--error /var/log/cointracking/$worker.err	\
+			--kill-timeout 5000
+		) || ret=`expr $ret + 1`
+		if test "$ret" -eq 0; then
+		    pm2 save
+		fi
+	    elif ! pm2 show $worker 2>/dev/null | grep online >/dev/null; then
+		pm2 stop $worker || true
+		pm2 start $worker --update-env --kill-timeout 5000
+	    else
+	        pm2 gracefulReload $worker --update-env --kill-timeout 5000
+	    fi
+	done
+	;;
+    *)
+	echo "unknown subcommand $1" >&2
+	exit 1
+	;;
+esac
+
+exit $?

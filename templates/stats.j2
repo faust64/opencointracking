@@ -1,0 +1,383 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+	<title>OpenCoinTracking</title>
+	<link rel='shortcut icon' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='16x16' href='/static/img/icon16.ico'/>
+	<link rel='icon' sizes='32x32' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='64x64' href='/static/img/icon64.ico'/>
+	<link rel='icon' type='image/png' sizes='196x196' href='/static/img/icon192.png'/>
+	<link rel='icon' type='image/png' sizes='160x160' href='/static/img/icon160.png'/>
+	<link rel='icon' type='image/png' sizes='96x96' href='/static/img/icon96.png'/>
+	<link rel='icon' type='image/png' sizes='64x64' href='/static/img/icon64.png'/>
+	<link rel='icon' type='image/png' sizes='32x32' href='/static/img/icon32.png'/>
+	<link rel='icon' type='image/png' sizes='16x16' href='/static/img/icon16.png'/>
+	<link rel='apple-touch-icon' href='/static/img/icon57.png'/>
+	<link rel='apple-touch-icon' sizes='114x114' href='/static/img/favicon114.png'/>
+	<link rel='apple-touch-icon' sizes='72x72' href='/static/img/favicon72.png'/>
+	<link rel='apple-touch-icon' sizes='144x144' href='/static/img/favicon144.png'/>
+	<link rel='apple-touch-icon' sizes='60x60' href='/static/img/favicon60.png'/>
+	<link rel='apple-touch-icon' sizes='120x120' href='/static/img/favicon120.png'/>
+	<link rel='apple-touch-icon' sizes='76x76' href='/static/img/favicon76.png'/>
+	<link rel='apple-touch-icon' sizes='152x152' href='/static/img/favicon152.png'/>
+	<link rel='apple-touch-icon' sizes='180x180' href='/static/img/favicon180.png'/>
+	<meta name='msapplication-TileColor' content='#FF0000'/>
+	<meta name='msapplication-TileImage' content='/static/img/icon144.png'/>
+	<meta name='msapplication-config' content='/static/browserconfig.xml'/>
+	<link href='/static/css/style.css' rel='stylesheet'/>
+	<script type='text/javascript' src='/static/js/chart.js'></script>
+	<script type='text/javascript' src='/static/js/script.js'></script>
+    </head>
+    <body>
+	<div class='page'>
+	    <div class='wrapper'>
+		<div class='header'>
+		    <div class='logout'>
+			<a href='/dashboard'>{{ username }}</a> | <a href='/logout'>Logout</a>
+		    </div>
+		    <div class='left'>
+			<img class='logo' src='/static/img/logo.png' alt='heyheyhey'/>
+		    </div>
+		    <div class='main-nav'>
+			<ul>
+			    <div class='dropdown'><a href='/dashboard'><button class='dropbtn'>Dashboard</button></a></div>
+			    <div class='dropdown'><a href='/stats'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Reporting</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/stats'>Trade Statistics</a></li>
+					<li class='menu-item'><a class='navlink' href='/trades'>Trade List</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeprices'>Trade Prices</a></li>
+					<li class='menu-item'><a class='navlink' href='/currentbalance'>Current Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyday'>Daily Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyexchange'>Balance by Exchange</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebycurrency'>Balance by Currency</a></li>
+					<li class='menu-item'><a class='navlink' href='/fees'>Trading Fees</a></li>
+					<li class='menu-item'><a class='navlink' href='/doubleentry'>Double-Entry List</a></li>
+					<li class='menu-item'><a class='navlink' href='/summary'>Summary</a></li>
+					<li class='menu-item'><a class='navlink' href='/gains'>Realized &amp; Unrealized Gains</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeanalysis'>Trade Analysis</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown'><a href='/entercoins'><button class='dropbtn'>Enter Coins</button></a></div>
+			    <div class='dropdown'><a href='/cointrends'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Charts &amp; Trends</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/cointrends'>Coin Trends</a></li>
+					<li class='menu-item'><a class='navlink' href='/coincharts'>Coin Charts</a></li> 
+					<li class='menu-item'><a class='navlink' href='/calculator'>Coin Price Calculator</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown' style='float:right'><a href='/settings'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Account</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/settings'>Account Settings</a></li>
+					<li class='menu-item'><a class='navlink' href='/logout'>Logout</a></li>
+				    </div>
+				</ul>
+			    </div>
+			</ul>
+		    </div>
+		</div>
+		<div class='separator'>&nbsp;</div>
+		<div class='contentbox_title'>{{ pagetitle }}</div>
+		<div class='separator'>&nbsp;</div>
+	    </div>
+	    <div id='refresh'>
+		<div class='contentbox_table'>
+		    <div class='contentbox_cell'>
+			<div style='width: auto; float: left;'><h2 class='cell-title'>Total Value of All Currencies in {{ preferredCurrency }}</h2></div>
+			<div style='width: auto; float: right;'>
+			    <select id='pick-currency-bbbd' class='currencypicker' onChange='setDefaultCurrency("bbbd");'>
+{{#currencies}}
+				<option value='{{ id }}'{{ sfx }}>{{ tag }}</option>
+{{/currencies}}
+			    </select>
+			    <select id='pick-graphwatch-bbbd' class='currencypicker' onChange='setDefaultWatch("bbbd");'>
+{{#graphwatch}}
+				<option value='{{ value }}'{{ sfx }}>{{ label }}</option>
+{{/graphwatch}}
+			    </select>
+			</div>
+			<div class='canvas' style='height: 450px;'>
+			    <canvas class='canvas-graph' id='big-balance-by-day'></canvas><br/>
+			</div>
+		    </div>
+		</div>
+		<div class='contentbox_table'>
+		    <div class='contentbox_cell'>
+			<div style='width: auto; float: left;'><h2 class='cell-title'>Values of Each Currency in {{ preferredCurrency }}</h2></div>
+			<div style='width: auto; float: right;'>
+			    <select id='pick-currency-bbcbd' class='currencypicker' onChange='setDefaultCurrency("bbcbd");'>
+{{#currencies}}
+				<option value='{{ id }}'{{ sfx }}>{{ tag }}</option>
+{{/currencies}}
+			    </select>
+			    <select id='pick-graphsrc-bbbdc' class='currencypicker' onChange='setDefaultFilter("bbcbd");'>
+{{#graphopts}}
+				<option value='{{ value }}'{{ sfx }}>{{ label }}</option>
+{{/graphopts}}
+			    </select>
+			</div>
+			<div class='canvas' style='height: 450px;'>
+			    <canvas class='canvas-graph' id='balance-by-currency-by-day'></canvas><br/>
+			</div>
+		    </div>
+		</div>
+		<div class='contentbox_table'>
+		    <div class='contentbox_cell'>
+			    <div style='width: auto; float: left;'><h2 class='cell-title'>Current Value by Currency</h2></div>
+			    <div style='width: auto; float: right;'>
+				<select id='pick-currency-mbc' class='currencypicker' onChange='setDefaultCurrency("mbc");'>
+{{#currencies}}
+				    <option value='{{ id }}'{{ sfx }}>{{ tag }}</option>
+{{/currencies}}
+				</select>
+				<select id='pick-graphsrc-mbc' class='currencypicker' onChange='setDefaultFilter("mbc");'>
+{{#graphopts}}
+				    <option value='{{ value }}'{{ sfx }}>{{ label }}</option>
+{{/graphopts}}
+				</select>
+			    </div>
+			    <div style='width: 100%; display: table;'>
+				<div class='canvas' style='width: 40%; display: table-cell;'>
+					<canvas class='canvas-graph' id='pie-balance-by-currency'></canvas><br/>
+				</div>
+				<div class='canvas' style='width: 60%; display: table-cell;'>
+					<canvas class='canvas-graph' id='bars-balance-by-currency'></canvas><br/>
+				</div>
+			    </div>
+			</div>
+		    </div>
+<!--
+		    <div class='contentbox_table'>
+			<div class='contentbox_cell'>
+			    <div style='width: auto; float: left;'><h2 class='cell-title'>Trading Volume</h2></div>
+			    <div style='width: auto; float: right;'>
+				<select id='pick-currency-tv' class='currencypicker' onChange='setDefaultCurrency("tv");'>
+{{#currencies}}
+				    <option value='{{ id }}'{{ sfx }}>{{ tag }}</option>
+{{/currencies}}
+				</select>
+				<select id='pick-graphwatch-tv' class='currencypicker' onChange='setDefaultWatch("tv");'>
+{{#graphwatch}}
+				    <option value='{{ value }}'{{ sfx }}>{{ label }}</option>
+{{/graphwatch}}
+				</select>
+			    </div>
+			    <div class='canvas' style='position: relative; height: 450px; width: 100%;'>
+				<canvas class='canvas-graph' id='trading-volume'></canvas><br/>
+			    </div>
+			</div>
+		    </div>
+-->
+		</div>
+		<script type='text/javascript'>
+		    var ctxbbbd = document.getElementById('big-balance-by-day').getContext('2d');
+		    var ctxbbcbd = document.getElementById('balance-by-currency-by-day').getContext('2d');
+		    var ctxpbbc = document.getElementById('pie-balance-by-currency').getContext('2d');
+		    var ctxbbbc = document.getElementById('bars-balance-by-currency').getContext('2d');
+		    var bbbdchart = new Chart(ctxbbbd, {
+			    type: 'line',
+			    data: {
+				    datasets: [{
+					    label: 'Coins Value',
+					    data: [
+{{#timebalance}}
+						    { t: new Date({{ at }}), y: {{ value }} },
+{{/timebalance}}
+						],
+					    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+					    cubicInterpolationMode: 'monotone',
+					    pointColor: 'rgba(255, 99, 132, 0.2)',
+					    pointBorderColor: 'rgba(255, 99, 132, 1)',
+					    pointRadius: 0,
+					    pointHoverRadius: 3,
+					    fill: 'origin',
+					}, {
+					    label: 'ROI',
+					    data: [
+{{#timebalance}}
+						    { t: new Date({{ at }}), y: {{ roi }} },
+{{/timebalance}}
+						],
+					    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+					    cubicInterpolationMode: 'monotone',
+					    pointColor: 'rgba(54, 162, 235, 0.2)',
+					    pointBorderColor: 'rgba(54, 162, 235, 1)',
+					    pointRadius: 0,
+					    pointHoverRadius: 3,
+					    fill: 'origin',
+					}, {
+					    label: 'Spent',
+					    data: [
+{{#timebalance}}
+						    { t: new Date({{ at }}), y: {{ spent }} },
+{{/timebalance}}
+						],
+					    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+					    cubicInterpolationMode: 'monotone',
+					    pointColor: 'rgba(255, 206, 86, 0.2)',
+					    pointBorderColor: 'rgba(255, 206, 86, 1)',
+					    pointRadius: 0,
+					    pointHoverRadius: 3,
+					    fill: 'origin',
+					}
+				    ]
+				},
+			    options: {
+				    maintainAspectRatio: false,
+				    responsive: true,
+				    scales: {
+					    xAxes: [{ type: 'time', distribution: 'series' }]
+					}
+				}
+			});
+		    var bbcbdchart = new Chart(ctxbbcbd, {
+			    type: 'line',
+			    data: {
+				    datasets: [
+{{#valueall}}
+					{
+					    label: '{{ name }} Value',
+					    data: [
+{{#values}}
+						    { t: new Date({{ at }}), y: {{ value }} },
+{{/values}}
+						],
+					    backgroundColor: '{{ maincolor }}',
+					    cubicInterpolationMode: 'monotone',
+					    pointColor: '{{ maincolor }}',
+					    pointBorderColor: '{{ altcolor }}',
+					    pointRadius: 0,
+					    pointHoverRadius: 3,
+					    fill: false
+					},
+{{/valueall}}
+				    ]
+				},
+				options: {
+				    maintainAspectRatio: false,
+				    responsive: true,
+				    scales: {
+					xAxes: [{ type: 'time', distribution: 'series' }]
+				    }
+				}
+			});
+		    var pbbcchart = new Chart(ctxpbbc, {
+			    type: 'pie',
+			    data: {
+				    labels: [
+{{#balancespie}}
+					    '{{ curname }}',
+{{/balancespie}}
+					],
+				    datasets: [{
+					    label: 'Value in {{ preferredCurrency }}',
+					    data: [
+{{#balancespie}}
+						    {{ intvalue }},
+{{/balancespie}}
+						],
+					    backgroundColor: [
+{{#balancespie}}
+						    '{{ bodycolor }}',
+{{/balancespie}}
+						],
+					    borderColor: [
+{{#balancespie}}
+						    '{{ bordercolor }}',
+{{/balancespie}}
+						],
+					    borderWidth: 1
+					}]
+				}
+			});
+		    var bbbcchart = new Chart(ctxbbbc, {
+			    type: 'bar',
+			    data: {
+				    labels: [
+{{#balancesbar}}
+					    '{{ curname }}',
+{{/balancesbar}}
+					],
+				    datasets: [{
+					    label: 'Value in {{ preferredCurrency }}',
+					    data: [
+{{#balancesbar}}
+						    {{ intvalue }},
+{{/balancesbar}}
+						],
+					    backgroundColor: [
+{{#balancesbar}}
+						    '{{ bodycolor }}',
+{{/balancesbar}}
+						],
+					    borderColor: [
+{{#balancesbar}}
+						    '{{ bordercolor }}',
+{{/balancesbar}}
+						],
+					    borderWidth: 1
+					}]
+				},
+			    options: { scales: { yAxes: [{ ticks: { beginAtZero:true } }] } }
+			});
+		</script>
+<!--
+		<script type='text/javascript'>
+		    var ctxtv = document.getElementById('trading-volume').getContext('2d');
+		    var tvchart = new Chart(ctxtv, {
+			    type: 'bar',
+			    data: {
+				    labels: [
+{{#tradevolume}}
+					'{{ at }}',
+{{/tradevolume}}
+				    ],
+				    datasets: [{
+					    label: 'Volume Spent in {{ preferredCurrency }}',
+					    data: [
+{{#tradevolume}}
+						    {{ spent }},
+{{/tradevolume}}
+						],
+					    backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+					    borderColor: window.chartColors.red,
+					    borderWidth: 1
+					}, {
+					    label: 'Volume Bought in {{ preferredCurrency }}',
+					    data: [
+{{#tradevolume}}
+						    {{ bought }},
+{{/tradevolume}}
+						],
+					    backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+					    borderColor: window.chartColors.blue,
+					    borderWidth: 1
+					}]
+				},
+			    options: {
+				    scales: {
+					    xAxes: [{
+						    type: 'time',
+						    display: true,
+						    time: { format: timeFormat, round: 'day' }
+						}]
+					}
+				}
+			});
+		</script>
+-->
+	    </div>
+	</div>
+	<div style='width:100%; clear: both; background-color:#283f5e; margin-top: 60px;'>
+	    <div class='footer' style='background-color:#283f5e; color:#FFF; font-size:14px; line-height:20px; padding-top:20px;'>
+		<div style='width:100%; background-color:#1f2735; color:#aab2bc; text-align:center; padding:12px 0;'>
+		    Sloppily reversed-engineered with <span style='color:#C30 !important;'>&#x2764;</span> in Paris &middot; Copyleft &copy; 2017-2018, OpenCoinTracking
+		</div>
+	    </div>
+	</div>
+    </body>
+</html>

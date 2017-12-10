@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head></head>
+    <body>
+	<table style='height: 100%; width: 100%; border-collapse: collapse; background: #f5f6f7;' cellpadding='0' cellspacing='0'>
+	    <tbody>
+		<tr valign='top'>
+		    <td>
+			<center style='height: 100%;'>
+			    <table style='height: 100%; width: 680px; margin: 0px; padding: 0px; background: #fff; border-left: 10px solid #f5f6f7; border-right: 10px solid #f5f6f7;' cellpadding='0' cellspacing='0'>
+				<tbody>
+				    <tr>
+					<td valign='middle' height='100' align='center' style='border: 1px solid #D3D3D3'>
+					    <img src='{{ serverroot }}/static/img/logo.png' alt='Profit / Loss Portfolio Monitor for your Digital Coins' width='630'/>
+					</td>
+				    </tr>
+				    <tr><td valign='top' style='padding:12px 10px; background: #f5f6f7;'></td></tr>
+				    <tr>
+					<td valign='top' style='padding:15px 20px; border: 1px solid #D3D3D3'>
+					    <p style='font-family: arial, helvetica, sans-serif; font-size: 20px; line-height: 1.4em; border-bottom: 1.5px solid #dde3e5; padding-bottom: 15px; color: #384147'>Your Profit / Loss Portfolio Monitor for Bitcoins and all Digital Coins</p>
+					    <p style='font-family: arial, helvetica, sans-serif; font-size: 13px; line-height: 1.4em; color: #464646'>
+						Hello <strong>{{ username }}</strong>,<br/><br/>
+						Here's your OpenCoinTracking Verification Code: <strong>{{ confirmcode }}</strong><br/><br/>
+						Best regards, the OpenCoinTracking Team
+					    </p>
+					</td>
+				    </tr>
+				    <tr><td valign='top' style='padding:12px 10px; background: #f5f6f7;'></td></tr>
+				    <tr><td align='center' valign='top' style='padding:15px 20px; border: 1px solid #D3D3D3'><p>&nbsp;<br/>&nbsp;</p></td></tr>
+				</tbody>
+			    </table>
+			</center>
+		    </td>
+		</tr>
+	    </tbody>
+	</table>
+    </body>
+</html>

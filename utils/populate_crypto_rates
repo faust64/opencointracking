@@ -1,0 +1,11 @@
+#!/bin/sh
+
+./utils/get_currencies crypto 2>/dev/null | while read CURRENCY
+do
+    echo "initiating $CURRENCY backcrawl on `date`"
+    ./utils/backcrawl_currency $CURRENCY
+    echo "done with $CURRENCY on `date`"
+done
+
+echo "done on `date`"
+exit 0

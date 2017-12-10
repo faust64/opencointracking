@@ -1,0 +1,7 @@
+bkp
+logs
+node_modules
+tmp
+wip
+*.sqlite
+*.[0-9]*

@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+const db = require('../lib/whateverql.js')();
+const currency = process.argv[2] || 'BTC';
+
+db.read(`SELECT * FROM currencies WHERE tag = '${currency}'`)
+    .then((coin) => {
+	    if (coin.length < 1) { throw new Error('coin not found'); }
+	    return db.read(`SELECT timestamp FROM rates WHERE id = ${coin[0].id} ORDER BY timestamp ASC LIMIT 1`);
+	})
+    .then((rates) => {
+	    if (rates.length >= 1) {
+		console.log(rates[0].timestamp);
+	    } else { console.log(0); }
+	    process.exit(0);
+	})
+    .catch((e) => {
+	    console.error(e);
+	    process.exit(1);
+	})

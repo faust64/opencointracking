@@ -1,0 +1,8 @@
+Hi {{ username }},
+
+Here's your OpenCoinTracking Verification Code:
+
+{{ confirmcode }}
+
+If you did not request for this email, you can ignore it.
+

@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+	<title>OpenCoinTracking</title>
+	<link rel='shortcut icon' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='16x16' href='/static/img/icon16.ico'/>
+	<link rel='icon' sizes='32x32' href='/static/img/icon32.ico'/>
+	<link rel='icon' sizes='64x64' href='/static/img/icon64.ico'/>
+	<link rel='icon' type='image/png' sizes='196x196' href='/static/img/icon192.png'/>
+	<link rel='icon' type='image/png' sizes='160x160' href='/static/img/icon160.png'/>
+	<link rel='icon' type='image/png' sizes='96x96' href='/static/img/icon96.png'/>
+	<link rel='icon' type='image/png' sizes='64x64' href='/static/img/icon64.png'/>
+	<link rel='icon' type='image/png' sizes='32x32' href='/static/img/icon32.png'/>
+	<link rel='icon' type='image/png' sizes='16x16' href='/static/img/icon16.png'/>
+	<link rel='apple-touch-icon' href='/static/img/icon57.png'/>
+	<link rel='apple-touch-icon' sizes='114x114' href='/static/img/favicon114.png'/>
+	<link rel='apple-touch-icon' sizes='72x72' href='/static/img/favicon72.png'/>
+	<link rel='apple-touch-icon' sizes='144x144' href='/static/img/favicon144.png'/>
+	<link rel='apple-touch-icon' sizes='60x60' href='/static/img/favicon60.png'/>
+	<link rel='apple-touch-icon' sizes='120x120' href='/static/img/favicon120.png'/>
+	<link rel='apple-touch-icon' sizes='76x76' href='/static/img/favicon76.png'/>
+	<link rel='apple-touch-icon' sizes='152x152' href='/static/img/favicon152.png'/>
+	<link rel='apple-touch-icon' sizes='180x180' href='/static/img/favicon180.png'/>
+	<meta name='msapplication-TileColor' content='#FF0000'/>
+	<meta name='msapplication-TileImage' content='/static/img/icon144.png'/>
+	<meta name='msapplication-config' content='/static/browserconfig.xml'/>
+	<link href='/static/css/style.css' rel='stylesheet'/>
+	<script src='/static/js/script.js'></script>
+    </head>
+    <body onload='load();'>
+	<div class='page'>
+	    <div class='wrapper'>
+		<div class='header'>
+		    <div class='logout'>
+			<a href='/dashboard'>{{ username }}</a> | <a href='/logout'>Logout</a>
+		    </div>
+		    <div class='left'>
+			<img class='logo' src='/static/img/logo.png' alt='heyheyhey'/>
+		    </div>
+		    <div class='main-nav'>
+			<ul>
+			    <div class='dropdown'><a href='/dashboard'><button class='dropbtn'>Dashboard</button></a></div>
+			    <div class='dropdown'><a href='/stats'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Reporting</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/stats'>Trade Statistics</a></li>
+					<li class='menu-item'><a class='navlink' href='/trades'>Trade List</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeprices'>Trade Prices</a></li>
+					<li class='menu-item'><a class='navlink' href='/currentbalance'>Current Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyday'>Daily Balance</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebyexchange'>Balance by Exchange</a></li>
+					<li class='menu-item'><a class='navlink' href='/balancebycurrency'>Balance by Currency</a></li>
+					<li class='menu-item'><a class='navlink' href='/fees'>Trading Fees</a></li>
+					<li class='menu-item'><a class='navlink' href='/doubleentry'>Double-Entry List</a></li>
+					<li class='menu-item'><a class='navlink' href='/summary'>Summary</a></li>
+					<li class='menu-item'><a class='navlink' href='/gains'>Realized &amp; Unrealized Gains</a></li>
+					<li class='menu-item'><a class='navlink' href='/tradeanalysis'>Trade Analysis</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown'><a href='/entercoins'><button class='dropbtn'>Enter Coins</button></a></div>
+			    <div class='dropdown'><a href='/cointrends'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Charts &amp; Trends</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/cointrends'>Coin Trends</a></li>
+					<li class='menu-item'><a class='navlink' href='/coincharts'>Coin Charts</a></li> 
+					<li class='menu-item'><a class='navlink' href='/calculator'>Coin Price Calculator</a></li>
+				    </div>
+				</ul>
+			    </div>
+			    <div class='dropdown' style='float:right'><a href='/settings'><img src='/static/img/down.gif' alt='dropdown'/><button class='dropbtn'>Account</button></a>
+				<ul id='submenu'>
+				    <div class='dropdown-content'>
+					<li class='menu-item'><a class='navlink' href='/settings'>Account Settings</a></li>
+					<li class='menu-item'><a class='navlink' href='/logout'>Logout</a></li>
+				    </div>
+				</ul>
+			    </div>
+			</ul>
+		    </div>
+		</div>
+		<div class='separator'>&nbsp;</div>
+	    </div>
+	    <div id='refresh'>
+		<div class='summarycontainer'>
+		    <div class='summaryboxtop'>
+			<table width='335' cellspacing='0' cellpadding='0'>
+			    <tbody>
+				<tr>
+				    <td width='65' valign='middle'><span class='summarytitle'><a href='/currentbalance'>Summary</a></span></td>
+				    <td width='130' align='right'><span class='summarycomment'>1 BTC</span></td>
+				    <td width='20' align='right'><span class='summarycomment'>=</span></td>
+				    <td width='130' align='right'><span class='summarycomment'>{{ btcprice }} {{ preferredCurrency }}</span></td>
+				</tr>
+			    </tbody>
+			</table>
+		    </div>
+		    <div class='summarybox'>
+			<table width='335' cellspacing='0' cellpadding='0'>
+			    <tbody>
+				<tr><td colspan='3'>&nbsp;</td></tr>
+				<tr><td colspan='3' align='right'><span class='summarycomment' style='font-size: 10px;'>Digital Currencies:</span></td></tr>
+{{#cbalances}}
+				<tr>
+				    <td width='195' align='right'><span class='summaryheld'>{{ curheld }} {{ curname }}</span></td>
+				    <td width='20' align='right'><span class='summarycomment'>=</span></td>
+				    <td width='130' align='right'><span class='summarycomment'>{{ curvalue }} {{ preferredCurrency }}</td>
+				</tr>
+{{/cbalances}}
+				<tr><td colspan='3'>&nbsp;</td></tr>
+				<tr><td colspan='3' align='right'><span class='summarycomment' style='font-size: 10px;'>FIAT Currencies:</span></td></tr>
+{{#fbalances}}
+				<tr>
+				    <td width='195' align='right'><span class='summaryheld'>{{ curheld }} {{ curname }}</span></td>
+				    <td width='20' align='right'><span class='summarycomment'>=</span></td>
+				    <td width='130' align='right'><span class='summarycomment'>{{ curvalue }} {{ preferredCurrency }}</td>
+				</tr>
+{{/fbalances}}
+				<tr><td colspan='3'>&nbsp;</td></tr>
+				<tr>
+				    <td width='195' align='right'><span class='summarycomment'>Sum Coins:</span></td>
+				    <td width='20' align='right'>&nbsp;</td>
+				    <td width='130' align='right'><span class='summaryheld'>{{ sumcoin }} {{ preferredCurrency }}</td>
+				</tr>
+				<tr>
+				    <td width='195' align='right'><span class='summarycomment'>Sum Currencies:</span></td>
+				    <td width='20' align='right'>&nbsp;</td>
+				    <td width='130' align='right'><span class='summaryheld'>{{ sumfiat }} {{ preferredCurrency }}</td>
+				</tr>
+				<tr>
+				    <td width='195' align='right'><span class='summarycomment'>Total Value:</span></td>
+				    <td width='20' align='right'>&nbsp;</td>
+				    <td width='130' align='right'><span class='summaryheld'>{{ sumtot }} {{ preferredCurrency }}</td>
+				</tr>
+				<tr><td colspan='3'>&nbsp;</td></tr>
+			    </tbody>
+			</table>
+		    </div>
+		</div>
+	    </div>
+	</div>
+	<div id='ct_reload'></div>
+	<div class='no_invert' style='width:100%; clear: both; background-color:#283f5e; margin-top: 60px;'>
+	    <div class='footer' style='background-color:#283f5e; color:#FFF; font-size:14px; line-height:20px; padding-bottom:20px;'>
+		<div class='s2' style='width:100%; background-color:#1f2735; color:#aab2bc; text-align:center; padding:12px 0;'>
+		    Sloppily reversed-engineered with <span style='color:#C30 !important;'>&#x2764;</span> in Paris &middot; Copyleft &copy; 2017-2018, OpenCoinTracking
+		</div>
+	    </div>
+	</div>
+    </body>
+</html>

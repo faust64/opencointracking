@@ -18,7 +18,7 @@
     "parse-to-float": "^1.0.1",
     "phantomjs-prebuilt": "^2.1.16",
     "pmx": "^1.5.4",
-    "qrcode": "1.1.0",
+    "qrcode": "1.2.0",
     "redis": "^2.7.1",
     "request": "^2.81.0",
     "speakeasy": "^2.0.0",

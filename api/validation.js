@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const Promise = require('bluebird');
-const logger = require('../lib/logger.js')('command-validation');
+const logger = require('wraplog')('command-validation');
 const helpers = require('../lib/helpers.js');
 
 const isAmountNumeric = Joi.number().min(0.00000001);

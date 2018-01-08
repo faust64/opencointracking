@@ -5,7 +5,8 @@ const crypto = require('crypto');
 const fs = require('fs');
 const helpers = require('../lib/helpers.js');
 const pf = require('parse-to-float');
-const pdf = require('nodepdf'); //FIXME: ain't that dirty?
+//const pdf = require('nodepdf'); //FIXME: ain't that dirty? Snyk confirms it could be
+const pdf = null;
 const pdfPath = process.env.PDFGEN_DIR || './tmp';
 const pmxProbe = require('pmx').probe();
 

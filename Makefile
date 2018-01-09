@@ -28,11 +28,11 @@ rewrap:
 dbinit:
 	if test "$$DB_CONNECTOR" = cassandra; then \
 	    test -f db/cassandra.init || return 0; \
-	    test "$$CASSANDRA_HOST" || return 0; \
+	    test "$$DB_HOST" || return 0; \
 	    if test "$$CQLSH_VERSION"; then \
-		grep -vE '^(#|$$)' db/cassandra.init | cqlsh --cqlversion=$$CQLSH_VERSION $$CASSANDRA_HOST; \
+		grep -vE '^(#|$$)' db/cassandra.init | cqlsh --cqlversion=$$CQLSH_VERSION $$DB_HOST; \
 	    else \
-		grep -vE '^(#|$$)' db/cassandra.init | cqlsh $$CASSANDRA_HOST; \
+		grep -vE '^(#|$$)' db/cassandra.init | cqlsh $$DB_HOST; \
 	    fi
 	    if test -x ./db/updateCassandra; then \
 		if ! ./db/updateCassandra; then \
@@ -41,11 +41,11 @@ dbinit:
 	    fi; \
 	else \
 	    test -f db/sqlite.init || return 0; \
-	    test -z "$$CT_SQLITE_DBFILE" && CT_SQLITE_DBFILE=./sqlite; \
-	    if test -s "$$CT_SQLITE_DBFILE"; then \
-		mv "$$CT_SQLITE_DBFILE" "$$CT_SQLITE_DBFILE.old"; \
+	    test -z "$$DB_DATABASE" && DB_DATABASE=./ct.sqlite; \
+	    if test -s "$$DB_DATABASE"; then \
+		mv "$$DB_DATABASE" "$$DB_DATABASE.old"; \
 	    fi
-	    cat db/sqlite.init | sqlite3 "$$CT_SQLITE_DBFILE";
+	    cat db/sqlite.init | sqlite3 "$$DB_DATABASE";
 	    if test -x ./db/updateSqlite; then \
 		if ! ./db/updateSqlite; then \
 		    exit 1; \
@@ -56,20 +56,20 @@ dbinit:
 dbinittest: dbinit
 	if test "$$DB_CONNECTOR" = cassandra; then \
 	    test -f db/cassandra.test || return 0; \
-	    test "$$CASSANDRA_HOST" || return 0; \
+	    test "$$DB_HOST" || return 0; \
 	    if test "$$CQLSH_VERSION"; then \
-		grep -v '^(#|$$)' db/cassandra.test | cqlsh --cqlversion=$$CQLSH_VERSION $$CASSANDRA_HOST; \
+		grep -v '^(#|$$)' db/cassandra.test | cqlsh --cqlversion=$$CQLSH_VERSION $$DB_HOST; \
 	    else \
-		grep -v '^(#|$$)' db/cassandra.test | cqlsh $$CASSANDRA_HOST; \
+		grep -v '^(#|$$)' db/cassandra.test | cqlsh $$DB_HOST; \
 	    fi; \
 	else \
 	    test -f db/sqlite.test || return 0; \
-	    test -z "$$CT_SQLITE_DBFILE" && CT_SQLITE_DBFILE=./sqlite; \
-	    if ! test -s "$$CT_SQLITE_DBFILE"; then \
+	    test -z "$$DB_DATABASE" && DB_DATABASE=./ct.sqlite; \
+	    if ! test -s "$$DB_DATABASE"; then \
 		echo "database missing" >&2; \
 		exit 1; \
 	    fi; \
-	    cat db/sqlite.test | sqlite3 "$$CT_SQLITE_DBFILE"; \
+	    cat db/sqlite.test | sqlite3 "$$DB_DATABASE"; \
 	fi
 
 install:

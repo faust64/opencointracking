@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const db = require('../lib/whateverql.js')();
+const config = require('../config.js');
+const db = require('someql')(config.db);
 const currency = process.argv[2] || 'BTC';
 
 db.read(`SELECT * FROM currencies WHERE tag = '${currency}'`)

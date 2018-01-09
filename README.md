@@ -22,12 +22,6 @@ numeric IDs won't be easy nor recommended, ...
 ## Env vars inventory - and their defaults, if any
 
 ```
-CASSANDRA_READ_CONSISTENCY || 'one'
-CASSANDRA_WRITE_CONSISTENCY || 'one'
-CASSANDRA_HOST || '127.0.0.1'
-CASSANDRA_KEYSPACE || 'opencointracking'
-CASSANDRA_AUTH_USER
-CASSANDRA_AUTH_PASS
 CIRCLECI
 DEBUG
 BIND_ADDR || '127.0.0.1'
@@ -39,17 +33,15 @@ AIRBRAKE_KEY
 CT_HOSTNAME || 'localhost'
 CT_PORT
 CT_PROTO || env === 'production' ? 'https' : 'http'
-CT_SQLITE_DBFILE || './ct.sqlite'
-DB_CONNECTOR || 'sqlite'
 MAIL_FROM || 'root@localhost'
 MAIL_REPLYTO || 'noreply@localhost'
 MIN_PWLEN || 6
 NODE_ENV
 PAGINATION_MIN || 100
 PDFGEN_DIR || './tmp'
-REDIS_DBID || 0
-REDIS_HOST || '127.0.0.1'
-REDIS_PORT || 6379
+QUEUE_DB || 0
+QUEUE_HOST || '127.0.0.1'
+QUEUE_PORT || 6379
 SMTP_HOST || '127.0.0.1'
 SMTP_PASS
 SMTP_SSL
@@ -59,6 +51,27 @@ SYSLOG_PROTO || 'unix'
 SYSLOG_UNIX_SOCKET
 SYSLOG_PROXY || 'localhost'
 SYSLOG_PORT || 514
+
+#sqlite
+DB_CONNECTOR || 'sqlite'
+DB_DATABASE || './ct.sqlite'
+
+#mysql, postgres & cassandra DB_CONNECTOR:
+#DB_DATABASE || 'opencointracking'
+#DB_HOST || '127.0.0.1'
+#DB_USER
+#DB_PASS
+
+#mysql, postgres
+#DB_PORT
+
+#postgres
+#DB_SSL
+
+#cassandra
+#CQLSH_VERSION
+#DB_READ_CONSISTENCY || 'one'
+#DB_WRITE_CONSISTENCY || 'one'
 ```
 
 ## DB init

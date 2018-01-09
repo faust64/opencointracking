@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const db = require('../lib/whateverql.js')();
 const arg = process.argv[2] || false;
+const config = require('../config.js');
+const db = require('someql')(config.db);
 let filter = '';
 
 if (arg === 'crypto') {

@@ -20,6 +20,7 @@
     "qrcode": "1.2.0",
     "redis": "^2.8.0",
     "request": "^2.83.0",
+    "someql": "^0.0.3",
     "speakeasy": "^2.0.0",
     "wraplog": "^0.0.2"
   },

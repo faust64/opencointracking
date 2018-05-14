@@ -155,13 +155,7 @@ $ pm2 save
  * speed up pages rendering time: cache arrays pre-formatting/paging into redis
    and/or consider some kind of client-side/server-less paging/sotring?
  * should not request for 2fa code more than once every (user-defined-interval-defaults-to-24h)
- * pdf export consistently fails, regardless of the library I try, ... (code 127 using nodepdf)
+ * pdf export consistently fails, regardless of the library I try, ...
  * sql schema missing defaults & not nulls
  * packaging
  * docs
-
-note: nodepdf requires phantomjs-prebuilt installed globally, or patching `node_modules/nodepdf/child.js`, replacing line 51 with:
-
-```
-var stream = child.exec('test -x ./node_modules/.bin/'+(cmd || 'phantomjs')+' && echo ./node_modules/.bin/'+(cmd || 'phantomjs')+' ||'+which+' '+(cmd || 'phantomjs'), function(err, stdo, stde){
-```

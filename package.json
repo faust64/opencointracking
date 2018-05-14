@@ -29,7 +29,7 @@
   },
   "description": "sql-based Coin Tracking",
   "engines": {
-    "node": "6.9.1"
+    "node": "8.11.1"
   },
   "repository": "https://github.com/faust64/cointracking"
 }

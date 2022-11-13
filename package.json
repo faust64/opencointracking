@@ -11,16 +11,15 @@
     "connect-redis": "^3.3.3",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
-    "joi": "13.1.1",
+    "joi": "^14.3.1",
     "mustache": "^2.3.0",
     "node-schedule": "^1.2.3",
     "parse-to-float": "^1.0.1",
-    "phantomjs-prebuilt": "^2.1.16",
     "pmx": "^1.5.5",
     "qrcode": "^1.5.1",
     "redis": "^3.1.1",
-    "request": "^2.83.0",
-    "someql": "^0.0.3",
+    "request": "^2.85.0",
+    "someql": "^0.0.5",
     "speakeasy": "^2.0.0",
     "wraplog": "^0.0.2"
   },
@@ -29,7 +28,7 @@
   },
   "description": "sql-based Coin Tracking",
   "engines": {
-    "node": "6.9.1"
+    "node": "8.11.1"
   },
   "repository": "https://github.com/faust64/cointracking"
 }
